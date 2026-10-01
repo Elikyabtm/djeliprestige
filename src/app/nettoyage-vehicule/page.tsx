@@ -33,7 +33,7 @@ const pillars = [
   {
     n: "03",
     title: "Soin",
-    items: ["Traitement tableau de bord", "Traitement cuir / plastiques", "Polissage carrosserie", "Rénovation de phares"],
+    items: ["Traitement tableau de bord", "Traitement cuir / plastiques", "Polissage carrosserie"],
   },
   {
     n: "04",

@@ -36,15 +36,22 @@ export default function MentionsLegalesPage() {
         </p>
       </div>
       <div>
+        <h2>Conception & réalisation</h2>
+        <p>
+          Design et développement du site : {business.credits.designer}, {business.credits.role.toLowerCase()}.
+        </p>
+      </div>
+      <div>
         <h2>Hébergement</h2>
         <p>{legal.host ?? pending}</p>
       </div>
       <div>
         <h2>Propriété intellectuelle</h2>
         <p>
-          L&apos;ensemble des contenus de ce site (textes, photographies, éléments graphiques) est la
-          propriété de {legal.companyName}, sauf mention contraire. Toute reproduction sans
-          autorisation préalable est interdite.
+          La conception graphique, la mise en page et le développement de ce site sont l&apos;œuvre
+          de {business.credits.designer}, {business.credits.role.toLowerCase()}, qui en conserve les
+          droits d&apos;auteur. Toute reproduction, totale ou partielle, sans autorisation préalable
+          est interdite.
         </p>
       </div>
     </LegalPage>

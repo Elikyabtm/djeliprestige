@@ -1,4 +1,4 @@
-import { Armchair, Cog, Droplet, Lightbulb, Sparkles, Wind, type LucideIcon } from "lucide-react";
+import { Armchair, Cog, Droplet, Sparkles, Wind, type LucideIcon } from "lucide-react";
 import type { CarOption } from "@/config/business";
 import { formatPrice } from "@/config/business";
 
@@ -8,7 +8,6 @@ const ICONS: Record<CarOption["icon"], LucideIcon> = {
   engine: Cog,
   wind: Wind,
   sparkles: Sparkles,
-  headlight: Lightbulb,
 };
 
 /** Une option sur la ligne éditoriale : icône fine, libellé, supplément. */

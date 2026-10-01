@@ -101,9 +101,11 @@ export function Footer() {
 
         <div className="mt-20 flex flex-col gap-3 border-t border-paper/10 py-8 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {business.businessName}. Tous droits réservés.
+            © {year} {business.businessName}
           </p>
-          <p className="eyebrow">{business.activity}</p>
+          <p>
+            Design & développement : {business.credits.designer}, {business.credits.role.toLowerCase()}
+          </p>
         </div>
       </div>
     </footer>

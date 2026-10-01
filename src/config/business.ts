@@ -24,7 +24,7 @@ export type CarOption = {
   label: string;
   /** Prix en euros, ou null si « Sur devis ». */
   price: number | null;
-  icon: "armchair" | "leather" | "engine" | "wind" | "sparkles" | "headlight";
+  icon: "armchair" | "leather" | "engine" | "wind" | "sparkles";
 };
 
 export type Testimonial = {
@@ -50,8 +50,8 @@ export const business = {
   phoneHref: "tel:+33753111179",
   whatsappDisplay: "+33 7 53 11 11 79",
   whatsapp: "https://wa.me/33753111179",
-  email: "contact@djeliprestige.fr",
-  emailHref: "mailto:contact@djeliprestige.fr",
+  email: "djeliprestige@gmail.com",
+  emailHref: "mailto:djeliprestige@gmail.com",
   location: "Paris & alentours",
 
   // TODO: renseigner l'URL réelle du site une fois le domaine en ligne.
@@ -91,7 +91,6 @@ export const business = {
         "Nettoyage moteur",
         "Désinfection / ozone",
         "Polissage",
-        "Rénovation de phares",
       ],
     },
     {
@@ -239,7 +238,6 @@ export const business = {
     { id: "moteur", label: "Nettoyage moteur", price: 30, icon: "engine" },
     { id: "ozone", label: "Odeur / désinfection ozone", price: 20, icon: "wind" },
     { id: "polissage", label: "Polissage carrosserie", price: null, icon: "sparkles" },
-    { id: "phares", label: "Rénovation phares", price: 25, icon: "headlight" },
   ] satisfies CarOption[],
 
   commitments: [
@@ -284,6 +282,12 @@ export const business = {
       "Professionnels",
       "Autre",
     ],
+  },
+
+  /** Crédits du site : conception graphique et développement. */
+  credits: {
+    designer: "Elikya Botomba",
+    role: "Webdesigner",
   },
 
   legal: {

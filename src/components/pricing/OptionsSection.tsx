@@ -29,7 +29,7 @@ export function OptionsSection() {
         </div>
 
         <Reveal className="mt-16 border-t border-ink/10 lg:mt-20 lg:border-b lg:py-10" delay={0.05}>
-          <ul className="grid grid-cols-2 gap-x-6 md:grid-cols-3 lg:grid-cols-6 lg:gap-x-0">
+          <ul className="grid grid-cols-2 gap-x-6 md:grid-cols-3 lg:grid-cols-5 lg:gap-x-0">
             {business.carOptions.map((option, i) => (
               <OptionItem key={option.id} option={option} index={i} />
             ))}
