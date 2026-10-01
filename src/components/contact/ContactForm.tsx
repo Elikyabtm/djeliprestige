@@ -5,20 +5,12 @@ import { useMemo, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { business } from "@/config/business";
+import { validateContact, type ContactErrors, type ContactFields } from "@/lib/contact";
 import { EASE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 
-type Fields = {
-  nom: string;
-  prenom: string;
-  telephone: string;
-  email: string;
-  profil: string;
-  service: string;
-  message: string;
-};
-
-type Errors = Partial<Record<keyof Fields, string>>;
+type Fields = ContactFields;
+type Errors = ContactErrors;
 
 const SERVICE_FROM_QUERY: Record<string, string> = {
   conciergerie: "Conciergerie",
@@ -27,29 +19,9 @@ const SERVICE_FROM_QUERY: Record<string, string> = {
   professionnels: "Professionnels",
 };
 
-function validate(f: Fields): Errors {
-  const e: Errors = {};
-  if (!f.nom.trim()) e.nom = "Merci d'indiquer votre nom.";
-  if (!f.prenom.trim()) e.prenom = "Merci d'indiquer votre prénom.";
-  if (!f.telephone.trim() && !f.email.trim()) {
-    e.telephone = "Indiquez un téléphone ou un e-mail pour être recontacté.";
-  }
-  if (f.telephone.trim() && !/^[+\d][\d\s.-]{7,}$/.test(f.telephone.trim())) {
-    e.telephone = "Ce numéro ne semble pas valide.";
-  }
-  if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) {
-    e.email = "Cette adresse e-mail ne semble pas valide.";
-  }
-  if (!f.service) e.service = "Choisissez un service.";
-  if (!f.message.trim()) e.message = "Décrivez brièvement votre besoin.";
-  return e;
-}
-
 /**
- * Formulaire de demande.
- * TODO: brancher un envoi serveur (Route Handler + service e-mail) ;
- * en attendant, la demande est préparée dans le logiciel de messagerie
- * de l'utilisateur, à destination de business.email.
+ * Formulaire de demande — envoi automatique via /api/contact
+ * (e-mail adressé à business.email).
  */
 export function ContactForm() {
   const params = useSearchParams();
@@ -71,40 +43,64 @@ export function ContactForm() {
 
   const [fields, setFields] = useState<Fields>(initial);
   const [errors, setErrors] = useState<Errors>({});
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [serverError, setServerError] = useState("");
+  const [trap, setTrap] = useState("");
 
   const set = (key: keyof Fields) => (value: string) => {
     setFields((f) => ({ ...f, [key]: value }));
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
-  const onSubmit = (ev: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    const e = validate(fields);
+    if (status === "sending") return;
+    const e = validateContact(fields);
     setErrors(e);
     const firstError = Object.keys(e)[0];
     if (firstError) {
       document.getElementById(`field-${firstError}`)?.focus();
       return;
     }
-    const subject = `Demande de devis — ${fields.service} — ${fields.prenom} ${fields.nom}`;
-    const body = [
-      `Nom : ${fields.nom}`,
-      `Prénom : ${fields.prenom}`,
-      `Téléphone : ${fields.telephone || "—"}`,
-      `E-mail : ${fields.email || "—"}`,
-      `Je suis : ${fields.profil}`,
-      `Service : ${fields.service}`,
-      "",
-      fields.message,
-    ].join("\n");
-    const mailto = `${business.emailHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailto, "_self");
-    setStatus("sent");
+
+    setStatus("sending");
+    setServerError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...fields, website: trap }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; errors?: Errors };
+      if (res.ok && data.ok) {
+        setStatus("sent");
+        setFields({ ...initial, message: "" });
+        return;
+      }
+      if (data.errors) setErrors(data.errors);
+      setServerError(data.error ?? "Votre demande n'a pas pu être envoyée.");
+      setStatus("error");
+    } catch {
+      setServerError("Connexion impossible. Vérifiez votre connexion internet.");
+      setStatus("error");
+    }
   };
 
   return (
     <form onSubmit={onSubmit} noValidate className="text-ink" aria-describedby="form-note">
+      {/* Champ piège anti-spam : masqué aux humains et aux lecteurs d'écran */}
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="field-website">Ne pas remplir</label>
+        <input
+          id="field-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={trap}
+          onChange={(e) => setTrap(e.target.value)}
+        />
+      </div>
       <div className="grid gap-x-8 sm:grid-cols-2">
         <Field id="nom" label="Nom" value={fields.nom} onChange={set("nom")} error={errors.nom} autoComplete="family-name" required />
         <Field id="prenom" label="Prénom" value={fields.prenom} onChange={set("prenom")} error={errors.prenom} autoComplete="given-name" required />
@@ -193,32 +189,47 @@ export function ContactForm() {
       <div className="mt-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="submit"
-          className="group inline-flex min-h-14 items-center justify-center gap-4 bg-black px-9 text-[0.74rem] font-medium tracking-[0.22em] text-paper uppercase transition-colors duration-500 hover:bg-charcoal"
+          disabled={status === "sending"}
+          aria-busy={status === "sending"}
+          className="group disabled:cursor-wait disabled:opacity-70 inline-flex min-h-14 items-center justify-center gap-4 bg-black px-9 text-[0.74rem] font-medium tracking-[0.22em] text-paper uppercase transition-colors duration-500 hover:bg-charcoal"
         >
-          Envoyer ma demande
+          {status === "sending" ? "Envoi en cours…" : "Envoyer ma demande"}
           <ArrowRight aria-hidden strokeWidth={1.25} className="h-4 w-4 text-gold transition-transform duration-500 group-hover:translate-x-1" />
         </button>
         <p id="form-note" className="max-w-xs text-xs leading-relaxed text-ink/55">
-          Votre demande s&apos;ouvre dans votre messagerie, adressée à {business.email}.
+          Votre demande nous est transmise directement. Nous revenons vers vous rapidement.
         </p>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {status === "sent" ? (
           <motion.p
+            key="sent"
             role="status"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: EASE }}
-            className="mt-8 border-l border-gold-deep pl-4 text-sm text-ink/75"
+            className="mt-8 border-l border-gold-deep pl-4 text-sm text-ink/80"
           >
-            Votre messagerie s&apos;est ouverte avec votre demande. Si rien ne s&apos;est passé,
-            écrivez-nous à{" "}
+            Merci, votre demande a bien été envoyée. Nous vous recontactons au plus vite.
+          </motion.p>
+        ) : null}
+        {status === "error" ? (
+          <motion.p
+            key="error"
+            role="alert"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="mt-8 border-l border-red-800 pl-4 text-sm text-ink/80"
+          >
+            {serverError} Vous pouvez aussi nous écrire à{" "}
             <a href={business.emailHref} className="underline underline-offset-4">
               {business.email}
             </a>{" "}
-            ou appelez le{" "}
+            ou appeler le{" "}
             <a href={business.phoneHref} className="underline underline-offset-4">
               {business.phone}
             </a>

@@ -18,9 +18,9 @@ export default function ConfidentialitePage() {
       <div>
         <h2>Données collectées</h2>
         <p>
-          Le formulaire de contact prépare un e-mail dans votre messagerie : les informations que
-          vous saisissez (nom, prénom, téléphone, e-mail, message) ne sont transmises à{" "}
-          {business.businessName} que lorsque vous envoyez cet e-mail.
+          Lorsque vous utilisez le formulaire de contact, les informations saisies (nom, prénom,
+          téléphone, e-mail, profil, service souhaité et message) sont transmises par e-mail à{" "}
+          {business.businessName}. Elles ne sont pas enregistrées dans une base de données du site.
         </p>
       </div>
       <div>
