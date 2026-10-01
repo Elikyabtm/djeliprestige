@@ -24,8 +24,8 @@
   --color-muted: #9b9994;
   --color-muted-dark: #5f5c56;
 
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
   --ease-prestige: cubic-bezier(0.22, 1, 0.36, 1);
 

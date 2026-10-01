@@ -1,25 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { business } from "@/config/business";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingContact } from "@/components/layout/FloatingContact";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+// Polices auto-hébergées (pas de téléchargement Google au build).
+import "@fontsource/cormorant-garamond/300.css";
+import "@fontsource/cormorant-garamond/300-italic.css";
+import "@fontsource/cormorant-garamond/400.css";
+import "@fontsource/cormorant-garamond/400-italic.css";
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/500-italic.css";
+import "@fontsource-variable/manrope/wght.css";
 import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  display: "swap",
-});
 
 const description =
   "Conciergerie, nettoyage automobile, entretien d'habitations, locations Airbnb et services aux professionnels à Paris & alentours. Un partenaire de confiance pour un quotidien plus simple.";
@@ -80,7 +73,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${cormorant.variable} ${manrope.variable}`}>
+    <html lang="fr">
       <body>
         <a
           href="#contenu"
