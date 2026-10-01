@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   DJELI PRESTIGE — design tokens
+   Le doré est un accent : labels, numéros, filets, hover.
+------------------------------------------------------------------- */
+@theme {
+  --color-black: #080808;
+  --color-charcoal: #111111;
+  --color-dark-soft: #181818;
+
+  --color-ivory: #f5f1e8;
+  --color-cream: #ece4d5;
+  --color-white: #fafaf8;
+
+  --color-gold: #c9a35c;
+  --color-gold-light: #dfc181;
+  --color-gold-muted: #9c7a42;
+  /* Variante plus profonde pour le texte doré sur fond clair (contraste AA) */
+  --color-gold-deep: #7a5c2b;
+
+  --color-ink: #121212;
+  --color-paper: #f4f1ea;
+  --color-muted: #9b9994;
+  --color-muted-dark: #5f5c56;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --ease-prestige: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --breakpoint-3xl: 112rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-black);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 4px;
+  }
+
+  button,
+  [role="button"],
+  a {
+    cursor: pointer;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Typographie éditoriale
+------------------------------------------------------------------- */
+@utility display-xl {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(3.4rem, 9vw, 9rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+}
+
+@utility display-lg {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.75rem, 6vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+@utility display-md {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.2rem, 4vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+@utility display-sm {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 2.6vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+@utility outline-text {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+/* Gouttière éditoriale commune */
+@utility gutter {
+  padding-inline: clamp(1.25rem, 5vw, 6rem);
+}
+
+@utility container-wide {
+  width: 100%;
+  max-width: 100rem;
+  margin-inline: auto;
+}
+
+/* Filet fin */
+@utility hairline {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
