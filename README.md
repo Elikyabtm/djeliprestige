@@ -15,11 +15,12 @@ npm run build
 
 ## Formulaire de contact (envoi automatique)
 
-Les demandes sont envoyées par e-mail via `src/app/api/contact/route.ts` (Gmail SMTP).
+Les demandes sont envoyées par e-mail via `src/app/api/contact/route.ts`, au choix :
 
-1. Sur le compte Google `djeliprestige@gmail.com` : activer la validation en deux étapes,
-   puis créer un mot de passe d'application sur https://myaccount.google.com/apppasswords.
-2. En local : copier `.env.example` en `.env.local` et renseigner `SMTP_USER` / `SMTP_PASS`.
-3. Sur Vercel : Settings → Environment Variables → ajouter `SMTP_USER` et `SMTP_PASS`, puis redéployer.
+- **Resend (recommandé)** : créer un compte sur https://resend.com avec `djeliprestige@gmail.com`,
+  générer une clé API, puis définir `RESEND_API_KEY`.
+- **Gmail SMTP** : activer la validation en deux étapes, créer un mot de passe d'application,
+  puis définir `SMTP_USER` et `SMTP_PASS`.
 
-Sans ces variables, le formulaire affiche un message d'erreur avec le téléphone et l'e-mail.
+En local : copier `.env.example` en `.env.local`. Sur Vercel : Settings → Environment Variables,
+puis redéployer. Sans configuration, le formulaire affiche le téléphone et l'e-mail en secours.

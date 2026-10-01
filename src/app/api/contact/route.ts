@@ -3,9 +3,15 @@ import { business } from "@/config/business";
 import { toContactFields, validateContact, type ContactFields } from "@/lib/contact";
 
 /**
- * Envoi automatique du formulaire de contact par e-mail (SMTP).
+ * Envoi automatique du formulaire de contact par e-mail.
  *
- * Variables d'environnement (voir .env.example) :
+ * Deux méthodes, au choix (voir .env.example) :
+ *
+ * A) Resend (recommandé, sans mot de passe Gmail)
+ *   RESEND_API_KEY — clé API Resend (compte créé avec l'adresse destinataire)
+ *   RESEND_FROM    — optionnel, expéditeur ; défaut onboarding@resend.dev
+ *
+ * B) SMTP Gmail
  *   SMTP_USER  — adresse Gmail expéditrice (ex. djeliprestige@gmail.com)
  *   SMTP_PASS  — mot de passe d'application Gmail (16 caractères)
  *   SMTP_HOST  — optionnel, défaut smtp.gmail.com
@@ -87,10 +93,41 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, errors }, { status: 422 });
   }
 
+  const { text, html } = buildEmail(fields);
+  const to = process.env.CONTACT_TO || business.email;
+  const subject = oneLine(`Demande de devis — ${fields.service} — ${fields.prenom} ${fields.nom}`);
+  const replyName = oneLine(`${fields.prenom} ${fields.nom}`);
+  const replyTo = fields.email.trim() ? `"${replyName}" <${fields.email.trim()}>` : undefined;
+
+  // A) Resend
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: `${business.businessName} — Site web <${process.env.RESEND_FROM || "onboarding@resend.dev"}>`,
+          to: [to],
+          reply_to: replyTo,
+          subject,
+          text,
+          html,
+        }),
+      });
+      if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+    } catch (err) {
+      console.error("[contact] Échec de l'envoi (Resend) :", err);
+      return Response.json({ ok: false, error: "L'envoi a échoué." }, { status: 502 });
+    }
+    return Response.json({ ok: true });
+  }
+
+  // B) SMTP
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   if (!user || !pass) {
-    console.error("[contact] SMTP_USER / SMTP_PASS manquants : envoi impossible.");
+    console.error("[contact] Ni RESEND_API_KEY ni SMTP_USER / SMTP_PASS : envoi impossible.");
     return Response.json({ ok: false, error: "L'envoi n'est pas encore configuré." }, { status: 503 });
   }
 
@@ -102,13 +139,12 @@ export async function POST(request: Request) {
     auth: { user, pass },
   });
 
-  const { text, html } = buildEmail(fields);
   try {
     await transporter.sendMail({
       from: `"${business.businessName} — Site web" <${user}>`,
-      to: process.env.CONTACT_TO || business.email,
-      replyTo: fields.email.trim() ? `"${oneLine(`${fields.prenom} ${fields.nom}`)}" <${fields.email.trim()}>` : undefined,
-      subject: oneLine(`Demande de devis — ${fields.service} — ${fields.prenom} ${fields.nom}`),
+      to,
+      replyTo,
+      subject,
       text,
       html,
     });
