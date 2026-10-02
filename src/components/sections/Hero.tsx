@@ -118,7 +118,7 @@ export function Hero() {
             href="#djeli-prestige"
             className="eyebrow group hidden items-center gap-3 text-paper/60 transition-colors hover:text-gold-light lg:inline-flex"
           >
-            Scroll to discover
+            Défiler pour découvrir
             <ArrowDown
               aria-hidden
               strokeWidth={1.25}
