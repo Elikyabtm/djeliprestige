@@ -11,7 +11,7 @@ import { cn } from "@/lib/cn";
 import { EASE } from "@/lib/motion";
 
 /** Pages dont le haut est sur fond ivoire : header en encre tant qu'on n'a pas scrollé. */
-const LIGHT_TOP_ROUTES = ["/contact", "/mentions-legales", "/confidentialite"];
+const LIGHT_TOP_ROUTES = ["/contact", "/mentions-legales", "/politique-de-confidentialite", "/cookies"];
 
 export function Header() {
   const pathname = usePathname();

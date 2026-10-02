@@ -284,22 +284,7 @@ export const business = {
     ],
   },
 
-  /** Crédits du site : conception graphique et développement. */
-  credits: {
-    designer: "Elikya Botomba",
-    role: "Webdesigner",
-  },
-
-  legal: {
-    // TODO: compléter avec les informations légales réelles (forme juridique,
-    // SIRET, adresse du siège, responsable de publication, hébergeur).
-    companyName: "Djeli Prestige",
-    legalForm: null as string | null,
-    siret: null as string | null,
-    address: null as string | null,
-    publisher: null as string | null,
-    host: null as string | null,
-  },
+  // Informations juridiques, hébergeur et crédits : voir src/config/legal.ts
 };
 
 export const formatPrice = (value: number) => `${value} €`;

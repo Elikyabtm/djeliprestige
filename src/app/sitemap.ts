@@ -5,10 +5,19 @@ const routes = ["", "/services", "/conciergerie", "/airbnb", "/nettoyage-vehicul
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return routes.map((path) => ({
-    url: `${business.siteUrl}${path}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: path === "" ? 1 : 0.8,
-  }));
+  const legal = ["/mentions-legales", "/politique-de-confidentialite", "/cookies"];
+  return [
+    ...routes.map((path) => ({
+      url: `${business.siteUrl}${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: path === "" ? 1 : 0.8,
+    })),
+    ...legal.map((path) => ({
+      url: `${business.siteUrl}${path}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
+    })),
+  ];
 }

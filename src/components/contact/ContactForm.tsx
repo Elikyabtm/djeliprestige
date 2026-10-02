@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -200,6 +201,19 @@ export function ContactForm() {
           Votre demande nous est transmise directement. Nous revenons vers vous rapidement.
         </p>
       </div>
+
+      <p className="mt-8 max-w-lg border-t border-ink/10 pt-6 text-xs leading-relaxed text-ink/65">
+        Les informations renseignées dans ce formulaire sont utilisées par {business.businessName} afin
+        de traiter votre demande et de vous recontacter. En savoir plus sur l&apos;utilisation de vos
+        données dans notre{" "}
+        <Link
+          href="/politique-de-confidentialite"
+          className="text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:text-gold-deep"
+        >
+          Politique de confidentialité
+        </Link>
+        .
+      </p>
 
       <AnimatePresence mode="wait">
         {status === "sent" ? (

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { business } from "@/config/business";
 import { Logo } from "@/components/ui/Logo";
+import { legalConfig } from "@/config/legal";
 
 const legalLinks = [
   { label: "Mentions légales", href: "/mentions-legales" },
-  { label: "Confidentialité", href: "/confidentialite" },
+  { label: "Politique de confidentialité", href: "/politique-de-confidentialite" },
+  { label: "Cookies", href: "/cookies" },
 ];
 
 export function Footer() {
@@ -99,13 +101,24 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col gap-3 border-t border-paper/10 py-8 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {business.businessName}
-          </p>
-          <p>
-            Design & développement : {business.credits.designer}, {business.credits.role.toLowerCase()}
-          </p>
+        <div className="mt-20 flex flex-col gap-4 border-t border-paper/10 py-8 text-xs text-muted lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8">
+            <p>
+              © {year} {business.businessName}
+            </p>
+            <nav aria-label="Informations légales">
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {legalLinks.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="transition-colors hover:text-gold-light">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+          <p>Conception : {legalConfig.websiteDesigner}</p>
         </div>
       </div>
     </footer>
