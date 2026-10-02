@@ -21,10 +21,10 @@ export function BrandStatement() {
   return (
     <section
       ref={ref}
-      aria-label="Prestige is in the details"
+      aria-label="Le prestige est dans les détails"
       className="relative overflow-hidden bg-black py-36 text-paper lg:py-56"
     >
-      <p className="sr-only">Prestige is in the details.</p>
+      <p className="sr-only">Le prestige est dans les détails.</p>
       <div aria-hidden className="relative">
         <motion.p
           style={{ x: x1 }}
@@ -38,7 +38,7 @@ export function BrandStatement() {
             style={{ x: x2 }}
             className="shrink-0 font-serif text-[clamp(3.5rem,13vw,13rem)] leading-none font-light italic"
           >
-            is in
+            est dans
           </motion.p>
           <motion.div
             style={{ y: imgY }}
@@ -61,7 +61,7 @@ export function BrandStatement() {
           style={{ x: x3 }}
           className="mt-6 pl-[8vw] font-serif text-[clamp(3.5rem,14vw,15rem)] leading-[0.9] font-light whitespace-nowrap lg:pl-[18vw]"
         >
-          the details<span className="text-gold">.</span>
+          les détails<span className="text-gold">.</span>
         </motion.p>
       </div>
     </section>
